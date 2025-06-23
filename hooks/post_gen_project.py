@@ -1,10 +1,11 @@
 from pathlib import Path
 import sys
 
-sys.path.insert(0, str(Path.cwd() / "hooks"))
-print("[DEBUG] hook sys.path[0] =", sys.path[0])
+CURRENT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(CURRENT_DIR / "post_gen"))
 
-from post_gen import main
+# Import runner.main from inside post_gen
+from runner import main
 
 if __name__ == "__main__":
     main()
