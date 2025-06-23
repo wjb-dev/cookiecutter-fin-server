@@ -1,0 +1,14 @@
+{
+  "project_name": "My gRPC Service",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
+  "description": "A cross-language gRPC microservice.",
+  "author": "your-github-username",
+  "language": [
+    "cpp",
+    "go"
+  ],
+  "enableSwagger": [
+    "y",
+    "n"
+  ]
+}

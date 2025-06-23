@@ -1,0 +1,23 @@
+{% raw %}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: grpc
+      port: {{ .Values.service.grpcPort }}
+      targetPort: {{ .Values.service.port }}
+      protocol: TCP
+    - name: http
+      port: {{ .Values.service.httpPort }}
+      targetPort: {{ .Values.service.httpPort }}
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  {% endraw %}

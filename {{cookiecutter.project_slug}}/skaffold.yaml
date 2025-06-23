@@ -1,0 +1,38 @@
+apiVersion: skaffold/v4beta13
+kind: Config
+metadata:
+  name: {{ cookiecutter.project_slug }}
+
+build:
+  artifacts:
+    - image: {{ cookiecutter.project_slug }}-{{ cookiecutter.language }}
+      context: .
+      docker:
+        dockerfile: Dockerfile
+
+manifests:
+  helm:
+    releases:
+      - name: {{ cookiecutter.project_slug }}
+        chartPath: chart/
+        setValues:
+          image:
+            repository: {{ cookiecutter.project_slug }}-{{ cookiecutter.language }}
+            tag: local
+
+portForward:
+  - resourceType: service
+    resourceName: {{ cookiecutter.project_slug }}
+    port: 50051
+profiles:
+  - name: dev
+    activation:
+      - kubeContext: kind-*
+    build:
+      local:
+        push: false
+    deploy:
+      helm:
+        releases:
+          - name: {{ cookiecutter.project_slug }}
+

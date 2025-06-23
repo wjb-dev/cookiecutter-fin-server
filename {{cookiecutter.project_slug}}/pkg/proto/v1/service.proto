@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package v1;
+
+option go_package = "github.com/{{ cookiecutter.author }}/{{ cookiecutter.project_slug }}/pkg/proto/v1";
+
+service EchoService {
+  rpc Echo(EchoRequest) returns (EchoResponse);
+}
+
+message EchoRequest {
+  string message = 1;
+}
+
+message EchoResponse {
+  string message = 1;
+}

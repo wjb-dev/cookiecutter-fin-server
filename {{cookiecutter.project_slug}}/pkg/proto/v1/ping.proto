@@ -1,0 +1,17 @@
+syntax = "proto3";
+package v1;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/{{ cookiecutter.author }}/{{ cookiecutter.project_slug }}/pkg/proto/v1";
+
+
+service PingService {
+  rpc Ping(google.protobuf.Empty) returns (PingResponse);
+}
+
+message PingResponse {
+  string service = 1;
+  string status  = 2;
+  string version = 3;
+}

@@ -1,0 +1,81 @@
+{% raw %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.fullname" . }}
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "chart.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.swagger.enabled }}
+      initContainers:
+        - name: copy-swagger
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: [ "/bin/sh","-c","cp /swagger/*.swagger.json /shared-swagger" ]
+          volumeMounts:
+            - name: swagger
+              mountPath: /shared-swagger
+      {{- end }}
+      containers:
+        # ─────────────────────────── main gRPC / HTTP container ───────────────────────────
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: grpc
+              containerPort: {{ .Values.service.grpcPort }}
+              protocol: TCP
+            - name: http
+              containerPort: {{ .Values.service.httpPort }}
+              protocol: TCP
+            {{- if .Values.swagger.enabled }}
+            - name: swagger
+              containerPort: {{ .Values.swagger.port }}
+              protocol: TCP
+            {{- end }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.grpcPort }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.grpcPort }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+          {{- if .Values.swagger.enabled }}
+          volumeMounts:
+            - name: swagger
+              mountPath: /swagger
+          {{- end }}
+
+        {{- if .Values.swagger.enabled }}
+        # ─────────────────────────── optional Swagger-UI sidecar ──────────────────────────
+        - name: swagger-ui
+          image: swaggerapi/swagger-ui
+          env:
+            - name: SWAGGER_JSON
+              value: /swagger/{{ .Values.swagger.file }}
+          ports:
+            - name: swagger
+              containerPort: {{ .Values.swagger.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: swagger
+              mountPath: /swagger
+        {{- end }}
+
+      {{- if .Values.swagger.enabled }}
+      volumes:
+        - name: swagger
+          emptyDir: {}
+      {{- end }}
+  {% endraw %}
