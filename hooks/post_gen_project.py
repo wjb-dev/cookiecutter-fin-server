@@ -5,7 +5,7 @@ from pathlib import Path
 CURRENT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(CURRENT_DIR))
 
-from post_gen.runner import main  # import from post_gen/
+from post_gen import main  # import from post_gen/
 
 if __name__ == "__main__":
     main()
