@@ -10,11 +10,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-PKG_SPEC = "comet-postgen==0.2.4"
+PKG_SPEC = "haraka==0.2.5"
 
 def ensure_installed() -> None:
     try:
-        importlib.import_module("comet_postgen")
+        importlib.import_module("haraka")
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", PKG_SPEC])
 
