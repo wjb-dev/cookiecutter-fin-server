@@ -10,17 +10,17 @@ import subprocess
 import sys
 from pathlib import Path
 
-PKG_SPEC = "cookiecutter-postgen>=0.1.0"
+PKG_SPEC = "comet-postgen==0.2.4"
 
 def ensure_installed() -> None:
     try:
-        importlib.import_module("post_gen")
+        importlib.import_module("comet_postgen")
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", PKG_SPEC])
 
 ensure_installed()
 
-from post_gen import main, PostGenConfig
+from haraka import main, PostGenConfig
 if __name__ == "__main__":
 
     cfg = PostGenConfig(
