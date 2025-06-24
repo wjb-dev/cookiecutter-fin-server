@@ -10,7 +10,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-PKG_SPEC = "haraka==0.2.5"
+PKG_SPEC = "haraka==0.2.6"
 
 def ensure_installed() -> None:
     try:
